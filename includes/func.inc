@@ -112,3 +112,15 @@ function stripslashes_deep($value){
 function download($source, $save){
 	file_put_contents($save, fopen($source, 'r'));
 }
+
+function getVideoData($url){
+	$parser = detectDownloader($url);
+	if(file_exists("classes/$parser.class.php")){
+		include_once "classes/$parser.class.php";
+		$video = new video($url);
+		return $video->getResult();
+	}
+	else{
+		return false;
+	}
+}
