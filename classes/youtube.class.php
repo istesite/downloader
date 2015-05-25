@@ -3,6 +3,8 @@
 date_default_timezone_set("Asia/Tehran");
 
 class video {
+
+	var $parserName = 'youtube';
 	var $url = '';
 	var $pageSourceCode = '';
 	var $error = array();
@@ -29,6 +31,17 @@ class video {
 	}
 
 
+	function setUrl($urlx) {
+		if ($urlx != '') {
+			$this->url = $urlx;
+			$this->setResult('url', $urlx);
+		}
+		else {
+			$this->setError("Url bilgisi geçersiz.[" . $urlx . "]");
+		}
+	}
+
+
 	function setResult($key, $value) {
 		if (!isset($this->result[$key])) {
 			$this->result[$key] = $value;
@@ -36,6 +49,11 @@ class video {
 		else {
 			self::setError($key . ": daha önce tanımlanmış.");
 		}
+	}
+
+
+	function getResult() {
+		return $this->result;
 	}
 
 
@@ -81,22 +99,6 @@ class video {
 			return false;
 		}
 
-	}
-
-
-	function getResult() {
-		return $this->result;
-	}
-
-
-	function setUrl($urlx) {
-		if ($urlx != '') {
-			$this->url = $urlx;
-			$this->setResult('url', $urlx);
-		}
-		else {
-			$this->setError("Url bilgisi geçersiz.[" . $urlx . "]");
-		}
 	}
 
 
