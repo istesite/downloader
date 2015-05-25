@@ -109,18 +109,40 @@ function stripslashes_deep($value){
 	return $value;
 }
 
-function download($source, $save){
+function downloadx($source, $save, $referer=''){
 	file_put_contents($save, fopen($source, 'r'));
-}
-
-function getVideoData($url){
-	$parser = detectDownloader($url);
-	if(file_exists("classes/$parser.class.php")){
-		include_once "classes/$parser.class.php";
-		$video = new video($url);
-		return $video->getResult();
+	if(file_exists($save) and filesize($save) > 0){
+		return true;
 	}
 	else{
+		unlink($save);
+		return false;
+	}
+}
+
+function curlDownload($source, $save, $referer=''){
+	$fp = fopen ($save, 'w+');
+	$ch = curl_init(str_replace(" ", "%20", $source));
+	curl_setopt($ch, CURLOPT_TIMEOUT, 50);
+	curl_setopt($ch,CURLOPT_USERAGENT,'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.111 Safari/537.36');
+	curl_setopt($ch, CURLOPT_FILE, $fp); // write curl response to file
+	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+	if($referer != ''){
+		curl_setopt($ch, CURLOPT_REFERER, $referer);
+	}
+	curl_setopt($ch, CURLOPT_COOKIEJAR, 'cookie.txt');
+	curl_setopt($ch, CURLOPT_COOKIEFILE, 'cookie.txt');
+
+	curl_exec($ch); // get curl response
+	curl_close($ch);
+	fclose($fp);
+
+	if(file_exists($save) and filesize($save) > 0){
+		return true;
+	}
+	else{
+		unlink($save);
 		return false;
 	}
 }

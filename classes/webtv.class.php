@@ -163,4 +163,20 @@ class video {
 			return false;
 		}
 	}
+
+
+	function download(){
+		$source = $this->result['video_url'];
+		$save = DOWNLOAD_DIR.$this->result['video_file_name'];
+		$referer = $this->result['url'];
+
+		file_put_contents($save, fopen($source, 'r'));
+		if(file_exists($save) and filesize($save) > 2048){
+			return true;
+		}
+		else{
+			unlink($save);
+			return false;
+		}
+	}
 }
