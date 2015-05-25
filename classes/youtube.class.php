@@ -14,22 +14,17 @@ class video {
 	function __construct($url = '') {
 		if ($url != '') {
 			$this->setUrl($url);
-
-			for($i=0; $i<=20; $i++){
-				$this->getVideoInfo();
-				$data = $this->getResult();
-				//echo "<pre>".var_export($data, true)."</pre>"; exit;
-				if($data['type'] == 'video/mp4'){
-					echo "<pre>".var_export($data, true)."</pre>"; exit;
-				}
-			}
+			$this->getVideoInfo();
+		}
+		else{
+			$this->setError('Lütfen geçerli bir Youtube url giriniz.');
 		}
 	}
 
 
 	function __destruct() {
 		if (count($this->error) > 0) {
-			echo "Hata : \n<pre>" . var_export($this->error, TRUE) . "</pre>";
+			$this->setResult('error', $this->error);
 		}
 	}
 
@@ -45,31 +40,28 @@ class video {
 
 
 	function getVideoInfo(){
-		//die('http://www.youtube.com/get_video_info?&video_id=' . $this->getVideoId() . '&asv=3&el=detailpage&hl=en_US');
 		if($video_id = $this->getVideoId()){
 			$this->curlGet('http://www.youtube.com/get_video_info?&video_id=' . $video_id . '&asv=3&el=detailpage&hl=en_US');
 
 			$video_info = parse_url_data($this->pageSourceCode);
 			$video_info2 = parse_url_data(urldecode($video_info['url_encoded_fmt_stream_map']));
 			$video_infox = explode(',', urldecode($video_info['url_encoded_fmt_stream_map']));
-			//echo "<pre>".var_export($video_infox, true)."</pre>"; exit;
-			foreach($video_infox as $xxx){
-				$video_data = parse_url_data(urldecode($xxx));
-				$allVideoData[] = $video_data;
 
-				if(in_array($video_data['itag'], $this->availableTypes)){
-					$this->setResult('quality', $video_data['quality']);
-					$this->setResult('fallback_host', $video_data['fallback_host']);
-					$this->setResult('itag', $video_data['itag']);
-					$this->setResult('url', $video_data['url']);
+			foreach($video_infox as $xxx){
+				$video_data = parse_url_data($xxx);
+
+				if(in_array(urldecode($video_data['itag']), $this->availableTypes)){
+					$this->setResult('quality', urldecode($video_data['quality']));
+					$this->setResult('fallback_host', urldecode($video_data['fallback_host']));
+					$this->setResult('itag', urldecode($video_data['itag']));
+					$this->setResult('video_url', urldecode($video_data['url']));
+					$types = explode(';', urldecode($video_data['type']));
+					$this->setResult('type', $types[0]);
+					break;
 				}
 			}
 
-
-			$type = explode(';',urldecode($video_info2['type']));
-
 			$urlData = parse_url_data(urldecode($video_info2['url']));
-
 
 			$this->setResult('title', urldecode($video_info['title']));
 			$this->setResult('author', urldecode($video_info['author']));
@@ -80,12 +72,10 @@ class video {
 			$this->setResult('ipbits', $urlData['ipbits']);
 			$this->setResult('ip', $urlData['ip']);
 			$this->setResult('signature', $urlData['signature']);
-			$this->setResult('types', $type);
-			$this->setResult('typesss', $allVideoData);
-			$this->setResult('type', $type[0]);
 			$this->setResult('length', urldecode($video_info['length_seconds']));
+			$this->setResult('video_file_name', $this->genVideoFileName());
 
-			echo "<pre>".var_export($this->result, true)."</pre>"; exit;
+			return $this->getResult();
 		}
 		else{
 			return false;
@@ -102,6 +92,7 @@ class video {
 	function setUrl($urlx) {
 		if ($urlx != '') {
 			$this->url = $urlx;
+			$this->setResult('url', $urlx);
 		}
 		else {
 			$this->setError("Url bilgisi geçersiz.[" . $urlx . "]");
@@ -152,7 +143,42 @@ class video {
 		}
 		else {
 			$this->pageSourceCode = $tmp;
-			return $tmp;
+		}
+		return $tmp;
+	}
+
+
+	function allowableChars($str) {
+		$charBad = array('ç', 'ğ', 'ı', 'ö', 'ş', 'ü', 'Ç', 'Ğ', 'İ', 'Ö', 'Ş', 'Ü', ' ');
+		$charGood = array('c', 'g', 'i', 'o', 's', 'u', 'C', 'G', 'I', 'O', 'S', 'U', '-');
+		$str = str_replace($charBad, $charGood, $str);
+
+		$find = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','r','s','t','u','v','y','z','x','w','q',
+		              'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','R','S','T','U','V','Y','Z','X','W','Q',
+		              '0','1','2','3','4','5','6','7','8','9','_','-');
+
+		$cleanStr = '';
+		$strLen = strlen($str);
+
+		for($i=0; $i<$strLen; $i++)
+		{
+			$char = substr($str, $i, 1);
+			if(in_array($char, $find))
+				$cleanStr .= $char;
+		}
+
+		return $cleanStr;
+	}
+
+
+	function genVideoFileName(){
+		$fileName = '';
+		if(isset($this->result['title']) and $this->result['title'] != ''){
+			$fileName = $this->allowableChars($this->result['title']).".mp4";
+			return $fileName;
+		}
+		else{
+			return false;
 		}
 	}
 }
