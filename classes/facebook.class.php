@@ -14,7 +14,7 @@ class video {
 			$this->getVideoInfo();
 		}
 		else {
-			$this->setError('Lütfen geçerli bir Facebook url giriniz.');
+			$this->setError('LÃ¼tfen geÃ§erli bir Facebook url giriniz.');
 		}
 	}
 
@@ -33,7 +33,7 @@ class video {
 			$this->curlGet($this->url);
 		}
 		else {
-			$this->setError("Url bilgisi geçersiz.[" . $urlx . "]");
+			$this->setError("Url bilgisi geÃ§ersiz.[" . $urlx . "]");
 		}
 	}
 
@@ -43,7 +43,7 @@ class video {
 			$this->result[$key] = $value;
 		}
 		else {
-			self::setError($key . ": daha önce tanýmlanmýþ.");
+			self::setError($key . ": daha Ã¶nce tanÄ±mlanmÄ±ÅŸ.");
 		}
 	}
 
@@ -69,7 +69,7 @@ class video {
 			return $data['v'];
 		}
 		else {
-			$this->setError("video id deðeri bulunamadý. [" . $this->url . "]");
+			$this->setError("video id deÄŸeri bulunamadÄ±. [" . $this->url . "]");
 
 			return FALSE;
 		}
@@ -129,7 +129,7 @@ class video {
 				$this->setError('curlError: "' . curl_error($ch) . '" - Code: ' . curl_errno($ch));
 			}
 			else {
-				$this->setError("Curl ile sayfa içeriði alýnmadý.");
+				$this->setError("Curl ile sayfa iÃ§eriÄŸi alÄ±nmadÄ±.");
 			}
 		}
 		else {
@@ -141,7 +141,7 @@ class video {
 
 
 	function allowableChars($str) {
-		$charBad = array('ç', 'ð', 'ý', 'ö', 'þ', 'ü', 'Ç', 'Ð', 'Ý', 'Ö', 'Þ', 'Ü', ' ');
+		$charBad = array('Ã§', 'ÄŸ', 'Ä±', 'Ã¶', 'ÅŸ', 'Ã¼', 'Ã‡', 'Äž', 'Ä°', 'Ã–', 'Åž', 'Ãœ', ' ');
 		$charGood = array('c', 'g', 'i', 'o', 's', 'u', 'C', 'G', 'I', 'O', 'S', 'U', '-');
 		$str = str_replace($charBad, $charGood, $str);
 
