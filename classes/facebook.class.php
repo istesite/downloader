@@ -233,9 +233,12 @@ class video {
 		curl_setopt($ch, CURLOPT_FILE, $fp); // write curl response to file
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 
+		/*
 		if($referer != ''){
 			curl_setopt($ch, CURLOPT_REFERER, $referer);
 		}
+		*/
+
 		curl_setopt($ch, CURLOPT_COOKIEJAR, 'cookie.txt');
 		curl_setopt($ch, CURLOPT_COOKIEFILE, 'cookie.txt');
 
@@ -243,7 +246,7 @@ class video {
 		curl_close($ch);
 		fclose($fp);
 
-		if(file_exists($save) and filesize($save) > 0){
+		if(file_exists($save) and filesize($save) > DOWNLOAD_FILE_MIN_SIZE){
 			return true;
 		}
 		else{

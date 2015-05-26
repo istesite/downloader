@@ -63,8 +63,8 @@ class video {
 
 
 	function getVideoUrl(){
-		preg_match_all('%(http.*?\.mp4/[0-9a-z]{30,}/[0-9]{5,})%ix', $this->pageSourceCode, $result, PREG_PATTERN_ORDER);
-		return $result[1][0];
+		preg_match_all('/streamurl":"(.*?)"/', $this->pageSourceCode, $result, PREG_PATTERN_ORDER);
+		return urldecode($result[1][0]);
 	}
 
 
@@ -160,11 +160,28 @@ class video {
 
 	function download(){
 		$source = $this->result['video_url'];
-		$save = DOWNLOAD_DIR.$this->result['video_file_name'];
-		$referer = $this->result['url'];
+		$save = DOWNLOAD_DIR . $this->result['video_file_name'];
 
-		file_put_contents($save, fopen($source, 'r'));
-		if(file_exists($save) and filesize($save) > 2048){
+		$fp = fopen ($save, 'w+');
+		$ch = curl_init(str_replace(" ", "%20", $source));
+		curl_setopt($ch, CURLOPT_TIMEOUT, 50);
+		curl_setopt($ch,CURLOPT_USERAGENT,'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.111 Safari/537.36');
+		curl_setopt($ch, CURLOPT_FILE, $fp); // write curl response to file
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+		/*
+		if($referer != ''){
+			curl_setopt($ch, CURLOPT_REFERER, $referer);
+		}
+		*/
+		curl_setopt($ch, CURLOPT_COOKIEJAR, 'cookie.txt');
+		curl_setopt($ch, CURLOPT_COOKIEFILE, 'cookie.txt');
+
+		curl_exec($ch); // get curl response
+		curl_close($ch);
+		fclose($fp);
+
+		if(file_exists($save) and filesize($save) > DOWNLOAD_FILE_MIN_SIZE){
 			return true;
 		}
 		else{

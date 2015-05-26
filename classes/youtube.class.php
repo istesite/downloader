@@ -190,7 +190,7 @@ class video {
 		$referer = $this->result['url'];
 
 		file_put_contents($save, fopen($source, 'r'));
-		if(file_exists($save) and filesize($save) > 2048){
+		if(file_exists($save) and filesize($save) > DOWNLOAD_FILE_MIN_SIZE){
 			return true;
 		}
 		else{
