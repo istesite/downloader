@@ -11,7 +11,8 @@ if(isset($argv[1])){
 //$url = 'http://cghb.web.tv/video/cok-guzel-hareketler-bunlar-70-bolum-alman-usulu__r9xkayai7ji';
 //$url = 'http://www.izlesene.com/video/silva-gunbardhi-ft-mandi-ft-dafi-te-ka-lali-shpirt/7146746';
 //$url = 'http://www.izlesene.com/video/otilia-bilionera/7749333';
-$url = 'https://www.facebook.com/manyetix/videos/vb.550724211651962/909844915739888/?type=2&theater';
+$url = 'https://www.facebook.com/manyetix/videos/909844355739944/?video_source=pages_finch_thumbnail_video';
+//$url = 'https://www.facebook.com/manyetix/videos/vb.550724211651962/909844915739888/?type=2&theater';
 
 
 $parser = detectDownloader($url);

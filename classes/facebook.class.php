@@ -54,52 +54,49 @@ class video {
 
 
 	function getVideoInfo() {
-		//echo $this->pageSourceCode; exit;
 		$this->setResult('video_url', $this->getVideoUrl());
-	}
-
-
-	function getVideoId() {
-		$data = parse_url($this->url);
-		$data = parse_url_data($data['query']);
-
-		if (isset($data['v']) and $data['v'] != '') {
-			$this->setResult('video_id', $data['v']);
-
-			return $data['v'];
-		}
-		else {
-			$this->setError("video id değeri bulunamadı. [" . $this->url . "]");
-
-			return FALSE;
-		}
+		$this->setResult('picture_url', $this->getImageUrl());
+		$this->setResult('title', $this->getVideoName());
+		$this->setResult('description', $this->getVideoDesc());
+		$this->setResult('video_file_name', $this->genVideoFileName());
+		return $this->getResult();
 	}
 
 
 	function getVideoUrl(){
-		preg_match_all('/\[\["params".*?sd_src.*?(http.*?)"\]/si', $this->pageSourceCode, $result, PREG_PATTERN_ORDER);
-		return $result[1][0];
+		preg_match_all('/(\[\["params".*?"\]\])/ix', $this->pageSourceCode, $result, PREG_PATTERN_ORDER);
+		$data = $result[1][0];
+
+		$data = json_decode($data);
+		$data = urldecode($data[0][1]);
+
+		preg_match_all('/sd_src_no_ratelimit":"(.*?)"/ix', $data, $result, PREG_PATTERN_ORDER);
+		$data = $result[1][0];
+		$data = stripslashes($data);
+
+		return $data;
 	}
 
 
 	function getImageUrl(){
-		preg_match_all('/<link rel="image_src" href="(.*?)">/', $this->pageSourceCode, $result, PREG_PATTERN_ORDER);
-		$result = $result[1][0];
+		preg_match_all('/background-image:[\s]{0,}url\(["|\'|s|]{0,}(.*?)["|\'|s|]{0,}\)/ix', $this->pageSourceCode, $result, PREG_PATTERN_ORDER);
+		$result = stripslashes($result[1][0]);
 		return $result;
 	}
 
 
 	function getVideoName(){
-		preg_match_all('%<meta itemprop="name" content="(.*?)" />%', $this->pageSourceCode, $result, PREG_PATTERN_ORDER);
+		preg_match_all('/\"hasCaption\"\>[\<br[\s]{0,}\/\>]{0,}(.*?)\</s', $this->pageSourceCode, $result, PREG_PATTERN_ORDER);
+		//echo "<pre>".var_export($result, true)."</pre>";
 		$result = $result[1][0];
 		return $result;
 	}
 
 
 	function getVideoDesc(){
-		preg_match_all('%<meta itemprop="description" content="(.*?)" />%', $this->pageSourceCode, $result, PREG_PATTERN_ORDER);
+		preg_match_all('/\"hasCaption\"\>[\<br[\s]{0,}\/\>]{0,}(.*?)\</s', $this->pageSourceCode, $result, PREG_PATTERN_ORDER);
+		//echo "<pre>".var_export($result, true)."</pre>";
 		$result = $result[1][0];
-		$result = str_replace('...', '', $result);
 		return $result;
 	}
 
@@ -165,19 +162,17 @@ class video {
 
 
 	function genVideoFileName() {
-		$fileName = '';
+		$fileName = $this->parserName . "_" . date('YmdHis') . ".mp4";
+
 		if (isset($this->result['title']) and $this->result['title'] != '') {
 			$fileName = $this->allowableChars($this->result['title']) . ".mp4";
+		}
 
-			return $fileName;
-		}
-		else {
-			return FALSE;
-		}
+		return $fileName;
 	}
 
 
-	function download() {
+	function downloadx() {
 		$source = $this->result['video_url'];
 		$save = DOWNLOAD_DIR . $this->result['video_file_name'];
 		$referer = $this->result['url'];
@@ -190,6 +185,70 @@ class video {
 			unlink($save);
 
 			return FALSE;
+		}
+	}
+
+	function downloadxx(){
+		$source = $this->result['video_url'];
+		$save = DOWNLOAD_DIR . $this->result['video_file_name'];
+
+		$useragent = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)';
+		$referer = 'https://www.google.com/accounts/ServiceLogin?service=youtube';
+
+		$fp = fopen ($save, 'w+');
+		$ch = curl_init(str_replace(" ", "%20", $source));
+		curl_setopt($ch, CURLOPT_TIMEOUT, 50);
+		curl_setopt($ch,CURLOPT_USERAGENT,$useragent);
+		curl_setopt($ch, CURLOPT_FILE, $fp); // write curl response to file
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+		if($referer != ''){
+			curl_setopt($ch, CURLOPT_REFERER, $referer);
+		}
+		curl_setopt($ch, CURLOPT_COOKIEJAR, 'cookie.txt');
+		curl_setopt($ch, CURLOPT_COOKIEFILE, 'cookie.txt');
+
+		curl_exec($ch); // get curl response
+		curl_close($ch);
+		fclose($fp);
+
+		if(file_exists($save) and filesize($save) > 0){
+			return true;
+		}
+		else{
+			unlink($save);
+			return false;
+		}
+	}
+
+
+	function download(){
+		$source = $this->result['video_url'];
+		$save = DOWNLOAD_DIR . $this->result['video_file_name'];
+
+		$fp = fopen ($save, 'w+');
+		$ch = curl_init(str_replace(" ", "%20", $source));
+		curl_setopt($ch, CURLOPT_TIMEOUT, 50);
+		curl_setopt($ch,CURLOPT_USERAGENT,'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.111 Safari/537.36');
+		curl_setopt($ch, CURLOPT_FILE, $fp); // write curl response to file
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+		if($referer != ''){
+			curl_setopt($ch, CURLOPT_REFERER, $referer);
+		}
+		curl_setopt($ch, CURLOPT_COOKIEJAR, 'cookie.txt');
+		curl_setopt($ch, CURLOPT_COOKIEFILE, 'cookie.txt');
+
+		curl_exec($ch); // get curl response
+		curl_close($ch);
+		fclose($fp);
+
+		if(file_exists($save) and filesize($save) > 0){
+			return true;
+		}
+		else{
+			unlink($save);
+			return false;
 		}
 	}
 }

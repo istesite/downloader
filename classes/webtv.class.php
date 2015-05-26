@@ -153,15 +153,14 @@ class video {
 	}
 
 
-	function genVideoFileName(){
-		$fileName = '';
-		if(isset($this->result['title']) and $this->result['title'] != ''){
-			$fileName = $this->allowableChars($this->result['title']).".mp4";
-			return $fileName;
+	function genVideoFileName() {
+		$fileName = $this->parserName . "_" . date('YmdHis') . ".mp4";
+
+		if (isset($this->result['title']) and $this->result['title'] != '') {
+			$fileName = $this->allowableChars($this->result['title']) . ".mp4";
 		}
-		else{
-			return false;
-		}
+
+		return $fileName;
 	}
 
 

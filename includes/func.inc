@@ -146,3 +146,27 @@ function curlDownload($source, $save, $referer=''){
 		return false;
 	}
 }
+
+function objectToArray($object)
+{
+	if(is_object($object))
+	{
+		$newArray = array();
+		foreach((array)$object as $key => $val)
+		{
+			$newArray[$key] = $this->objectToArray($val);
+		}
+		return $newArray;
+	}
+	elseif(is_array($object))
+	{
+		$newArray = array();
+		foreach($object as $key => $val)
+		{
+			$newArray[$key] = $this->objectToArray($val);
+		}
+		return $newArray;
+	}
+	else
+		return $object;
+}
