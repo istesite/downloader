@@ -77,7 +77,7 @@ if($url != ''){
 				$downloadStatus = true;
 			}
 			else{
-				echo "$downloadCounter. Dosya indirilemedi. ERROR <br>\n";
+				//echo "$downloadCounter. Dosya indirilemedi. ERROR <br>\n";
 				$downloadCounter--;
 				sleep(1);
 			}
@@ -131,6 +131,9 @@ if($url != ''){
 		}catch(Exception $e) {
 			echo $e->getMessage();
 		}
+	}
+	else{
+		echo "Dosya indirilemedi. ERROR <br>\n";
 	}
 }
 
