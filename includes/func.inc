@@ -13,6 +13,9 @@ function detectDownloader($url) {
 	else if (strstr($url, 'izlesene.com/')) {
 		$result = 'izlesene';
 	}
+	else if (strstr($url, 'haberay.com.tr/')) {
+		$result = 'haberay';
+	}
 	else {
 		$result = $_POST['video_site'];
 	}
