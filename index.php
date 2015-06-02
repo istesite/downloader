@@ -1,5 +1,5 @@
 <form method="POST" action="">
-	<input type="text" name="video_url" size="50" style="height:40px; line-height:40px;" placeholder="http://">
+	<input type="text" name="video_url" size="50" style="height:40px; line-height:40px;" placeholder="http:// (dailymotion, youtube, facebook, web.tv, izlesene.com, haberya.com.tr,...)">
 	<select name="video_cat" style="height:40px; line-height:40px;">
 		<option value="">Kategori...</option>
 		<option value="school">Eğitim</option>
