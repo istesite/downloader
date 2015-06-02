@@ -16,6 +16,9 @@ function detectDownloader($url) {
 	else if (strstr($url, 'haberay.com.tr/')) {
 		$result = 'haberay';
 	}
+	else if (strstr($url, 'dailymotion.com/')) {
+		$result = 'dailymotion';
+	}
 	else {
 		$result = $_POST['video_site'];
 	}
