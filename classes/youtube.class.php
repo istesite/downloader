@@ -198,4 +198,25 @@ class video {
 			return false;
 		}
 	}
+
+	function download2() {
+		$rh = fopen($this->result['video_url'], 'rb');
+		$wh = fopen(DOWNLOAD_DIR.$this->result['video_file_name'], 'w+b');
+		if (!$rh || !$wh) {
+			return false;
+		}
+
+		while (!feof($rh)) {
+			if (fwrite($wh, fread($rh, 4096)) === FALSE) {
+				return false;
+			}
+			echo ' ';
+			flush();
+		}
+
+		fclose($rh);
+		fclose($wh);
+
+		return true;
+	}
 }

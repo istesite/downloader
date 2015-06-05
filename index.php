@@ -56,6 +56,7 @@ else{
 }
 
 if($url != ''){
+	writeFile('./downloadFileList.txt', $url);
 	$parser = detectDownloader($url);
 	echo "<h2>".strtoupper($parser)."</h2>\n";
 	if(file_exists("classes/$parser.class.php")){
