@@ -106,6 +106,7 @@ if($url != ''){
 				array(
 					'url'       => $urlx,
 					'title'     => $data['title'],
+					'tags'      => json_encode(explode(' ', $data['title'])),
 					'description'=> $data['description'],
 					'channel'   => ($videoCategory!=''?$videoCategory:'webcam'),
 					'published' => true,
