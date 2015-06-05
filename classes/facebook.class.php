@@ -89,7 +89,7 @@ class video {
 		preg_match_all('/\"hasCaption\"\>[\<br[\s]{0,}\/\>]{0,}(.*?)\</s', $this->pageSourceCode, $result, PREG_PATTERN_ORDER);
 		//echo "<pre>".var_export($result, true)."</pre>";
 		$result = $result[1][0];
-		return $result;
+		return $result!=''?$result:'fb_'.date('d-m-Y H:i:s');
 	}
 
 
@@ -97,7 +97,7 @@ class video {
 		preg_match_all('/\"hasCaption\"\>[\<br[\s]{0,}\/\>]{0,}(.*?)\</s', $this->pageSourceCode, $result, PREG_PATTERN_ORDER);
 		//echo "<pre>".var_export($result, true)."</pre>";
 		$result = $result[1][0];
-		return $result;
+		return $result!=''?$result:'fb_'.date('d-m-Y H:i:s');
 	}
 
 
