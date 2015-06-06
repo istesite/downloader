@@ -84,6 +84,7 @@ class video {
 			$this->setResult('title', urldecode($video_info['title']));
 			$this->setResult('author', urldecode($video_info['author']));
 			$this->setResult('keywords', urldecode($video_info['keywords']));
+			$this->setResult('description', urldecode($video_info['title'])."\n".urldecode($video_info['keywords']));
 			$this->setResult('picture_url', "http://i1.ytimg.com/vi/" . $video_id . "/hqdefault.jpg");
 
 			$this->setResult('expire', date("G:i:s T", $urlData['expire']));

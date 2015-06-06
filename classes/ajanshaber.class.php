@@ -64,10 +64,7 @@ class video {
 
 	function getVideoUrl(){
 		preg_match_all('/mp4:[\s\n\t\r]{0,}["\']{1,}(http.*?\.mp4)["\']{1,}/sx', $this->pageSourceCode, $result, PREG_PATTERN_ORDER);
-		$urlFile = explode('/', $result[1][0]);
-		$urlFile = $urlFile[count($urlFile) - 1];
-		$videoUrl = $result[1][0]."/".$urlFile."-360p.mp4";
-		//die($videoUrl)
+		$videoUrl = $result[1][0];
 		return $videoUrl;
 	}
 

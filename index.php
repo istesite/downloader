@@ -122,9 +122,10 @@ if($url != ''){
 				array(
 					'url'       => $urlx,
 					'title'     => $data['title'],
-					'tags'      => json_encode(explode(' ', str_replace(array('.', ',', '!', '?', ':', ';', '\'', '"'),'',$data['title']." ".implode(' ', $convText['title'])))),
+					'tags'      => genVideoTag($data['title']),
 					'description'=> $data['description'] . (count($convText['desc'])>0?"\r\n".implode("\r\n", $convText['desc']):''),
 					'channel'   => ($videoCategory!=''?$videoCategory:'webcam'),
+					'language' => $currentLangTitle,
 					'published' => true,
 				)
 			);

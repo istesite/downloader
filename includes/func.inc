@@ -228,3 +228,19 @@ function langDetect($text){
 		return false;
 	}
 }
+
+function genVideoTag($str){
+	$bad = array('the', 'and', 'for', 'yet', 'but', 'nor', 'and',
+	             "açıkçası ", "ama ", "ancak ", "bile ", "çünkü", "dahi ", "demek", "fakat", "gene", "gerek", "hâlbuki", "hatta", "hele", "hem", "hem de ", "ile", "ise", "ister", "kâh", "kısacası", "lâkin ", "madem", "nitekim", "oysa ", "oysaki ", "öyle ki", "öyleyse ", "üstelik ", "veya", "veyahut", "yahut", "yalnız", "yine", "yoksa", "zira");
+	$str = urldecode($str);
+	$str = strtolower($str);
+	$str = str_replace(array(',', '.', ';', ':', '!', '?', '-', '_', '"', "'"), '', $str);
+	$words = explode(' ', $str);
+	$result = array();
+	foreach($words as $word){
+		if(strlen($word)>= 3 and !in_array($word, $bad) and !in_array($word, $result)){
+			$result[] = $word;
+		}
+	}
+	return json_encode($result);
+}
