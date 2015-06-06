@@ -176,3 +176,52 @@ function objectToArray($object)
 	else
 		return $object;
 }
+
+function yandexCeviri($text, $from, $to){
+	$url='http://ceviri.yandex.net/api/v1/tr.json/detect?callback=ya_.json.c(3)&lang=';
+	$url.=$from."-".$to;
+	$url.='&text='.rawurlencode($text);
+	$url.='&srv=tr-text&id=9c7c13c5-0-0&reason=paste&options=4';
+	$ch = curl_init($url);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+	curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+	curl_setopt($ch, CURLOPT_HEADER, 0);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 120);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 120);
+	curl_setopt($ch, CURLOPT_URL, $url);
+	$html = curl_exec($ch);
+	curl_close($ch);
+	preg_match_all("#\"(.*?)\"#si",$html,$s);
+	return str_replace('"',"",$s[0][6]);
+}
+
+function langDetect($text){
+	$apiKey = 'trnsl.1.1.20150605T150916Z.19dc791723fe845e.a993aadc68df578c002401987a347c9dcdadd7fb';
+	$url='https://translate.yandex.net/api/v1.5/tr.json/detect?key='.$apiKey;
+	$url.='&text='.rawurlencode($text);
+
+	$ch = curl_init($url);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+	curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+	curl_setopt($ch, CURLOPT_HEADER, 0);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 120);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 120);
+	curl_setopt($ch, CURLOPT_URL, $url);
+	$html = curl_exec($ch);
+	curl_close($ch);
+	$result = json_decode($html);
+	if($result->code == '200'){
+		return $result->lang;
+	}
+	else{
+		return false;
+	}
+}

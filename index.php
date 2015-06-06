@@ -100,14 +100,30 @@ if($url != ''){
 			);
 
 
+			//-> Generate tags
+			$convertToLang = array('tr', 'en', 'fr', 'ja');
+			$currentLangTitle = langDetect($data['title']);
+			$currentLangDesc = langDetect($data['description']);
+			$convText = array();
+			foreach($convertToLang as $lngx){
+				if($currentLangTitle != $lngx){
+					$convText['title'][] = yandexCeviri($data['title'], $currentLangTitle, $lngx);
+				}
+			}
+			foreach($convertToLang as $lngx){
+				if($currentLangDesc != $lngx){
+					$convText['desc'][] = yandexCeviri($data['title'], $currentLangDesc, $lngx);
+				}
+			}
+
 			$vvii = realpath(DOWNLOAD_DIR . $data['video_file_name']);
 			$urlx = $api->uploadFile($vvii);
 			$resultx = $api->post('/me/videos',
 				array(
 					'url'       => $urlx,
 					'title'     => $data['title'],
-					'tags'      => json_encode(explode(' ', $data['title'])),
-					'description'=> $data['description'],
+					'tags'      => json_encode(explode(' ', str_replace(array('.', ',', '!', '?', ':', ';', '\'', '"'),'',$data['title']." ".implode(' ', $convText['title'])))),
+					'description'=> $data['description'] . (count($convText['desc'])>0?"\r\n".implode("\r\n", $convText['desc']):''),
 					'channel'   => ($videoCategory!=''?$videoCategory:'webcam'),
 					'published' => true,
 				)
