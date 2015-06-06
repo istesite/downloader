@@ -103,6 +103,7 @@ class video {
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
 		/* if you want to force to ipv6, uncomment the following line */
 		//curl_setopt( $ch , CURLOPT_IPRESOLVE , 'CURLOPT_IPRESOLVE_V6');
 		$tmp = curl_exec($ch);

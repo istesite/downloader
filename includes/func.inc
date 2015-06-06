@@ -1,10 +1,10 @@
 <?php
 function detectDownloader($url) {
 	$result = '';
-	if (strstr($url, 'youtube.com/watch') or strstr($url, 'youtu.be/')) {
+	if (strstr($url, 'youtube.com/') or strstr($url, 'youtu.be/')) {
 		$result = 'youtube';
 	}
-	else if (strstr($url, 'web.tv/video/')) {
+	else if (strstr($url, 'web.tv/')) {
 		$result = 'webtv';
 	}
 	else if (strstr($url, 'facebook.com/')) {
@@ -18,6 +18,9 @@ function detectDownloader($url) {
 	}
 	else if (strstr($url, 'dailymotion.com/')) {
 		$result = 'dailymotion';
+	}
+	else if (strstr($url, 'ajanshaber.com/')) {
+		$result = 'ajanshaber';
 	}
 	else {
 		$result = $_POST['video_site'];

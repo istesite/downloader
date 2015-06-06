@@ -1,7 +1,7 @@
 <?php
 class video {
 
-	var $parserName = 'haberay';
+	var $parserName = 'ajanshaber';
 	var $url = '';
 	var $pageSourceCode = '';
 	var $error = array();
@@ -13,7 +13,7 @@ class video {
 			$this->getVideoInfo();
 		}
 		else{
-			$this->setError('LÃ¼tfen geÃ§erli bir "haberay.com.tr" url giriniz.');
+			$this->setError('Lütfen geçerli bir "ajanshaber.com" url giriniz.');
 		}
 	}
 
@@ -32,7 +32,7 @@ class video {
 			$this->setResult('url', $urlx);
 		}
 		else {
-			$this->setError("Url bilgisi geÃ§ersiz.[" . $urlx . "]");
+			$this->setError("Url bilgisi geçersiz.[" . $urlx . "]");
 		}
 	}
 
@@ -42,7 +42,7 @@ class video {
 			$this->result[$key] = $value;
 		}
 		else {
-			self::setError($key . ": daha Ã¶nce tanÄ±mlanmÄ±ÅŸ.");
+			self::setError($key . ": daha önce tanýmlanmýþ.");
 		}
 	}
 
@@ -63,7 +63,7 @@ class video {
 
 
 	function getVideoUrl(){
-		preg_match_all('/\<div[\s\n\r\t]{0,}class=[\"\']{1,}code[\"\']{1,}\>[\s\n\r\t]{0,}\<iframe.*?src=[\"\']{1,}(.*?)\/index.html[\"\']{1,}.*?\>/', $this->pageSourceCode, $result, PREG_PATTERN_ORDER);
+		preg_match_all('/mp4:[\s\n\t\r]{0,}["\']{1,}(http.*?\.mp4)["\']{1,}/sx', $this->pageSourceCode, $result, PREG_PATTERN_ORDER);
 		$urlFile = explode('/', $result[1][0]);
 		$urlFile = $urlFile[count($urlFile) - 1];
 		$videoUrl = $result[1][0]."/".$urlFile."-360p.mp4";
@@ -73,21 +73,21 @@ class video {
 
 
 	function getImageUrl(){
-		preg_match_all('/\<link[\s\n\r\t]{0,}rel=[\"\']{1,}image_src[\"\']{1,}[\s\n\r\t]{0,}type=[\"\']{1,}image/jpeg[\"\']{1,}[\s\n\r\t]{0,}href=[\"\']{1,}(.*?)[\"\']{1,}[\s\n\r\t]{0,}\/\>/', $this->pageSourceCode, $result, PREG_PATTERN_ORDER);
+		preg_match_all('/thumb:[\s\n\t\r]{0,}["\']{1,}(http.*?[.jpg|.gif|.png])["\']{1,}/sx', $this->pageSourceCode, $result, PREG_PATTERN_ORDER);
 		$result = $result[1][0];
 		return $result;
 	}
 
 
 	function getVideoName(){
-		preg_match_all('%\<title\>(.*?)\<\/title\>%', $this->pageSourceCode, $result, PREG_PATTERN_ORDER);
+		preg_match_all('%<meta[\s\r\n\t]{1,}property="og:title"[\s\r\n\t]{1,}content="(.*?)"[\s\r\n\t]{0,}/>%sx', $this->pageSourceCode, $result, PREG_PATTERN_ORDER);
 		$result = $result[1][0];
 		return $result;
 	}
 
 
 	function getVideoDesc(){
-		preg_match_all('%\<meta[\s\n\r\t]{0,}name=[\"\']{1,}description[\"\']{1,}[\s\n\r\t]{0,}content=[\"\']{1,}(.*?)[\"\']{1,}[\s\n\r\t]{0,}\/\>%', $this->pageSourceCode, $result, PREG_PATTERN_ORDER);
+		preg_match_all('%<meta[\s\r\n\t]{1,}property="og:description"[\s\r\n\t]{1,}content="(.*?)"[\s\r\n\t]{0,}/>%sx', $this->pageSourceCode, $result, PREG_PATTERN_ORDER);
 		$result = $result[1][0];
 		$result = str_replace('...', '', $result);
 		return $result;
@@ -112,7 +112,7 @@ class video {
 				$this->setError('curlError: "' . curl_error($ch) . '" - Code: ' . curl_errno($ch));
 			}
 			else {
-				$this->setError("Curl ile sayfa iÃ§eriÄŸi alÄ±nmadÄ±.");
+				$this->setError("Curl ile sayfa içeriði alýnmadý.");
 			}
 		}
 		else {
@@ -131,7 +131,7 @@ class video {
 
 
 	function allowableChars($str) {
-		$charBad = array('Ã§', 'ÄŸ', 'Ä±', 'Ã¶', 'ÅŸ', 'Ã¼', 'Ã‡', 'Äž', 'Ä°', 'Ã–', 'Åž', 'Ãœ', ' ');
+		$charBad = array('ç', 'ð', 'ý', 'ö', 'þ', 'ü', 'Ç', 'Ð', 'Ý', 'Ö', 'Þ', 'Ü', ' ');
 		$charGood = array('c', 'g', 'i', 'o', 's', 'u', 'C', 'G', 'I', 'O', 'S', 'U', '-');
 		$str = str_replace($charBad, $charGood, $str);
 
