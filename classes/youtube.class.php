@@ -236,11 +236,38 @@ class video {
 	}
 
 
-	function getPlaylistVideoId($url = ''){
+	function getPlaylistVideoId(){
+		$url = $this->url;
+		preg_match_all('/data-video-id="(.*?)"/sx', file_get_contents($url), $result, PREG_PATTERN_ORDER);
+
+		return $result[1];
+	}
+
+
+	function isChannel(){
+		if(strstr($this->url, 'youtube.com/') and strstr($this->url, 'user/')){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+
+	function getChannelName($url = ''){
 		if($url == ''){
 			$url = $this->url;
 		}
-		preg_match_all('/data-video-id="(.*?)"/sx', file_get_contents($url), $result, PREG_PATTERN_ORDER);
+		preg_match_all('%youtube.com/user/([\w-_]{0,})[/feed]{0,}%', $url, $result, PREG_PATTERN_ORDER);
+		return $result[1][0];
+	}
+
+
+	function getChannelVideoId(){
+		$url = $this->url;
+		$channelName = $this->getChannelName($url);
+		$feedUrl = "https://www.youtube.com/user/".$channelName."/feed?activity_view=3";
+		preg_match_all('%span.*?"/watch\?v=(.*?)"%', file_get_contents($feedUrl), $result, PREG_PATTERN_ORDER);
+
 		return $result[1];
 	}
 }
