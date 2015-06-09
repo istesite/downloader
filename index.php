@@ -1,5 +1,5 @@
 <form method="POST" action="">
-	<input type="text" name="video_url" size="50" style="height:40px; line-height:40px;" placeholder="http:// (dailymotion, youtube, facebook, web.tv, izlesene.com, haberya.com.tr,...)">
+	<input type="text" name="video_url" size="50" style="height:40px; line-height:40px;" placeholder="http:// (dailymotion, youtube, facebook, web.tv, izlesene.com, haberya.com.tr, ajanshaber.com, ...)">
 	<select name="video_cat" style="height:40px; line-height:40px;">
 		<option value="">Kategori...</option>
 		<option value="school">Eğitim</option>
@@ -23,17 +23,6 @@
 </form>
 <?php
 include_once "init.php";
-
-//$url = 'https://www.youtube.com/watch?v=8NKKn2HGT2g';
-//$url = 'https://www.youtube.com/watch?v=GjMuvAHgx5E';
-//$url = 'https://www.youtube.com/watch?v=zTf-0T9BHJA&list=PLukqNtXBfGzahQEfJhcAn11DY98zhU1I1';
-//$url = 'http://cghb.web.tv/video/cok-guzel-hareketler-bunlar-70-bolum-alman-usulu__r9xkayai7ji';
-//$url = 'http://www.izlesene.com/video/silva-gunbardhi-ft-mandi-ft-dafi-te-ka-lali-shpirt/7146746';
-//$url = 'http://www.izlesene.com/video/hadise-prenses/7943261';
-//$url = 'http://www.izlesene.com/video/otilia-bilionera/7749333';
-//$url = 'https://www.facebook.com/manyetix/videos/909844355739944/?video_source=pages_finch_thumbnail_video';
-//$url = 'https://www.facebook.com/manyetix/videos/vb.550724211651962/909844915739888/?type=2&theater';
-//$url = 'http://www.dailymotion.com/video/x2rfpx9_kahkaha-atacaginiz-izleme-rekoru-kiran-en-komikler_fun';
 
 
 if(!isset($url) and isset($argv[1])){
@@ -64,9 +53,17 @@ if($url != ''){
 	}
 
 	$video = new video($url);
+	if($video->isPlaylist()){
+		$playlist = $video->getPlaylistVideoId();
+		foreach($playlist as $vidId){
+			echo "<img src='http://i1.ytimg.com/vi/" . $vidId . "/hqdefault.jpg' style='height:60px; width:80px;' border:1px solid #333; />
+			<span style='line-height:60px;'>https://www.youtube.com/watch?v=".$vidId." -> <a href='?video_url=https://www.youtube.com/watch?v=".$vidId."' target='_blank'>Yükle</a></span><br>\n";
+		}
+		exit;
+	}
 	$data = $video->getResult();
 
-	echo "<pre>".var_export($data, true)."</pre>";
+	//echo "<pre>".var_export($data, true)."</pre>";
 	if(urlExists($data['video_url'])){
 		$downloadCounter = DOWNLOAD_COUNTER;
 		$downloadStatus = false;
@@ -78,7 +75,6 @@ if($url != ''){
 				$downloadStatus = true;
 			}
 			else{
-				//echo "$downloadCounter. Dosya indirilemedi. ERROR <br>\n";
 				$downloadCounter--;
 				sleep(1);
 			}
@@ -118,17 +114,17 @@ if($url != ''){
 
 			$vvii = realpath(DOWNLOAD_DIR . $data['video_file_name']);
 			$urlx = $api->uploadFile($vvii);
-			$resultx = $api->post('/me/videos',
-				array(
-					'url'       => $urlx,
-					'title'     => $data['title'],
-					'tags'      => genVideoTag($data['title']),
-					'description'=> $data['description'] . (count($convText['desc'])>0?"\r\n".implode("\r\n", $convText['desc']):''),
-					'channel'   => ($videoCategory!=''?$videoCategory:'webcam'),
-					'language' => $currentLangTitle,
-					'published' => true,
-				)
+
+			$videoPostData = array(
+				'url'       => $urlx,
+				'title'     => $data['title'],
+				'tags'      => genVideoTag($data['title']),
+				'description'=> $data['description'] . (count($convText['desc'])>0?"\r\n".implode("\r\n", $convText['desc']):''),
+				'channel'   => ($videoCategory!=''?$videoCategory:'webcam'),
+				'language' => $currentLangTitle,
+				'published' => true,
 			);
+			$resultx = $api->post('/me/videos', $videoPostData);
 
 			if(!$resultx){
 				throw new Exception("<pre>".var_export($resultx, true)."</pre>");
@@ -136,12 +132,12 @@ if($url != ''){
 
 			if(isset($resultx['id']) and $resultx['id'] != ''){
 				echo "<h5>".$resultx['title']."</h5>";
+				echo "<pre>".var_export($videoPostData, true)."</pre>\n";
 				echo '<h4 style="color:green;">YÜKLEME BAŞARILI! :)</h4>';
 			}
 			else{
 				echo '<h4 style="color:red;">VİDEO YÜKLENEMEDİ. :(</h4>';
 			}
-			//echo "\n<pre>".var_export($resultx, true)."</pre>\n";
 
 			if(file_exists(DOWNLOAD_DIR . $data['video_file_name'])){
 				sleep(3);
@@ -152,7 +148,11 @@ if($url != ''){
 		}
 	}
 	else{
-		echo "Dosya indirilemedi. ERROR <br>\n";
+		echo "<h4 style=\"color:red;\">Dosya indirilemedi. ERROR</h4> <br>\n";
+	}
+
+	if(isset($_REQUEST['exit'])){
+		echo "<script>window.close()</script>";
 	}
 }
 

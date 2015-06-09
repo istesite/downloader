@@ -200,6 +200,7 @@ class video {
 		}
 	}
 
+
 	function download2() {
 		$rh = fopen($this->result['video_url'], 'rb');
 		$wh = fopen(DOWNLOAD_DIR.$this->result['video_file_name'], 'w+b');
@@ -219,5 +220,27 @@ class video {
 		fclose($wh);
 
 		return true;
+	}
+
+
+	function isPlaylist(){
+		$data = parse_url($this->url);
+		$data = parse_url_data($data['query']);
+
+		if(isset($data['list']) and $data['list'] != ''){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+
+
+	function getPlaylistVideoId($url = ''){
+		if($url == ''){
+			$url = $this->url;
+		}
+		preg_match_all('/data-video-id="(.*?)"/sx', file_get_contents($url), $result, PREG_PATTERN_ORDER);
+		return $result[1];
 	}
 }
