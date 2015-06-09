@@ -242,5 +242,19 @@ function genVideoTag($str){
 			$result[] = $word;
 		}
 	}
-	return json_encode($result);
+	//return json_encode($result);
+	return custom_json_encode($result);
+}
+
+function custom_json_encode($array){
+	$str = '';
+	foreach($array as $arr){
+		if($str == ''){
+			$str .= '"'.$arr.'"';
+		}
+		else{
+			$str .= ',"'.$arr.'"';
+		}
+	}
+	return '['.$str.']';
 }
