@@ -238,10 +238,11 @@ function genVideoTag($str){
 	$str = urldecode($str);
 	$str = strtolower($str);
 	$str = str_replace(array(',', '.', ';', ':', '!', '?', '-', '_', '"', "'"), '', $str);
+	$str = str_replace(array("(", ")", "[","]", "{","}", "/", "\\"), ' ', $str);
 	$words = explode(' ', $str);
 	$result = array();
 	foreach($words as $word){
-		if(strlen($word)>= 3 and !in_array($word, $bad) and !in_array($word, $result)){
+		if(strlen($word)>= 3 and !in_array($word, $bad) and !in_array($word, $result) and trim($word) != ''){
 			$result[] = $word;
 		}
 	}

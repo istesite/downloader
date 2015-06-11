@@ -53,11 +53,41 @@ if($url != ''){
 	}
 
 	$video = new video($url);
-	if($video->isPlaylist()){
-		$playlist = $video->getPlaylistVideoId();
+	if($parser == 'youtube' and $video->isPlaylist()){
+		$playlist = $video->getPlaylistVideoId(true);
 		foreach($playlist as $vidId){
-			echo "<img src='http://i1.ytimg.com/vi/" . $vidId . "/hqdefault.jpg' style='height:60px; width:80px;' border:1px solid #333; />
-			<span style='line-height:60px;'>https://www.youtube.com/watch?v=".$vidId." -> <a href='?video_url=https://www.youtube.com/watch?v=".$vidId."' target='_blank'>Yükle</a></span><br>\n";
+			$videox = new video("https://www.youtube.com/watch?v=".$vidId);
+			$vidData = $videox->getVideoInfo();
+			echo "<div style='margin-bottom: 20px;'>
+						<a href='https://www.youtube.com/watch?v=".$vidId."' target='_blank' style='float:left;'>
+							<img src='http://i1.ytimg.com/vi/" . $vidId . "/hqdefault.jpg' style='height:120px; width:160px;' border:1px solid #333; />
+						</a>
+						<div style='height:120px; float:left;'>
+							<span style='padding:10px;'>".$vidData['title']."</span><br>
+							<a href='?exit&video_cat=".$videoCategory."&video_url=https://www.youtube.com/watch?v=".$vidId."' target='_blank' style='padding:10px; line-height:50px;'>Yükle</a>
+						</div>
+						<div style='clear:both;'></div>
+					</div>\n";
+			unset($videox);
+		}
+		exit;
+	}
+	else if($parser == 'youtube' and $video->isChannel()){
+		$channellist = $video->getChannelVideoId(true);
+		foreach($channellist as $vidId){
+			$videox = new video("https://www.youtube.com/watch?v=".$vidId);
+			$vidData = $videox->getVideoInfo();
+			echo "<div style='margin-bottom: 20px;'>
+						<a href='https://www.youtube.com/watch?v=".$vidId."' target='_blank' style='float:left;'>
+							<img src='http://i1.ytimg.com/vi/" . $vidId . "/hqdefault.jpg' style='height:120px; width:160px;' border:1px solid #333; />
+						</a>
+						<div style='height:120px; float:left;'>
+							<span style='padding:10px;'>".$vidData['title']."</span><br>
+							<a href='?exit&video_cat=".$videoCategory."&video_url=https://www.youtube.com/watch?v=".$vidId."' target='_blank' style='padding:10px; line-height:50px;'>Yükle</a>
+						</div>
+						<div style='clear:both;'></div>
+					</div>\n";
+			unset($videox);
 		}
 		exit;
 	}
@@ -152,7 +182,7 @@ if($url != ''){
 	}
 
 	if(isset($_REQUEST['exit'])){
-		echo "<script>window.close()</script>";
+		echo "<script>setTimeout(function(){ window.close(); }, 15000);</script>";
 	}
 }
 
