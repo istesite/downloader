@@ -22,6 +22,9 @@ function detectDownloader($url) {
 	else if (strstr($url, 'ajanshaber.com/')) {
 		$result = 'ajanshaber';
 	}
+	else if (strstr($url, 'mynet.com/')) {
+		$result = 'mynet';
+	}
 	else {
 		$result = $_POST['video_site'];
 	}
@@ -257,4 +260,22 @@ function custom_json_encode($array){
 		}
 	}
 	return '['.$str.']';
+}
+
+function getTwitterTags($str){
+	preg_match_all('/<meta[\s\n\t\r]{1,}name="twitter:([title|description|url|image]{1,})"[\s\n\t\r]{1,}content="(.*?)">/sx', $str, $result, PREG_PATTERN_ORDER);
+	$res = array();
+	foreach($result[1] as $key=>$val){
+		$res[$val] = $result[2][$key];
+	}
+	return $res;
+}
+
+function getFacebookTags($str){
+	preg_match_all('/<meta[\s\n\t\r]{1,}property="og:([title|description|url|image]{1,})"[\s\n\t\r]{1,}content="(.*?)">/sx', $str, $result, PREG_PATTERN_ORDER);
+	$res = array();
+	foreach($result[1] as $key=>$val){
+		$res[$val] = $result[2][$key];
+	}
+	return $res;
 }
