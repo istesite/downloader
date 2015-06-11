@@ -81,8 +81,8 @@ class video {
 
 
 	function getVideoName(){
-		preg_match_all('%\<title\>(.*?)\<\/title\>%', $this->pageSourceCode, $result, PREG_PATTERN_ORDER);
-		$result = $result[1][0];
+		$tags = getFacebookTags($this->curlGet($this->url));
+		return ($tags['title']!=''?$tags['title']:'mynet_'.date("d.m.Y H:i:s"));
 		return $result;
 	}
 
