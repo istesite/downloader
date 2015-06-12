@@ -1,5 +1,5 @@
 <form method="POST" action="">
-	<input type="text" name="video_url" size="50" style="height:40px; line-height:40px;" placeholder="http:// (dailymotion, youtube, facebook, web.tv, izlesene.com, haberya.com.tr, ajanshaber.com, ...)">
+	<input type="text" name="video_url" size="50" style="height:40px; line-height:40px;" placeholder="http:// (daily., youtu., faceb., web.tv, izlesene.com, haberya.com.tr, ajanshaber.com, ...)">
 	<select name="video_cat" style="height:40px; line-height:40px;">
 		<option value="">Kategori...</option>
 		<option value="school">Eğitim</option>
@@ -21,6 +21,15 @@
 	</select>
 	<input type="submit" value="Yükle" style="height:40px; line-height:40px;" />
 </form>
+<div style="font-size: 10px; color:#999; line-height: 10px;">
+	<p><b>Dailymotion:</b> http://www.dailymotion.com/video/x2tmwx0_new-best-club-dance-music-megamix-2015-club-music_music</p>
+	<p><b>Youtube:</b> https://www.youtube.com/watch?v=2zNB56chXUA</p>
+	<p><b>Facebook:</b> https://www.facebook.com/elcircodelamega/videos/10152785567701006/</p>
+	<p><b>İzlesene:</b> http://www.izlesene.com/video/adem-gumuskaya-sansimiz-dondu/8552263</p>
+	<p><b>Haber Ay:</b> http://www.haberay.com.tr/akraba-olsa-davetiye-verilmez-737v.htm</p>
+	<p><b>Ajans Haber:</b> http://www.ajanshaber.com/bmwden-mercedese-gozdagi-video/199359</p>
+	<p><b>Web.tv:</b> http://onuradiguzel.web.tv/video/hakan-durmazlar-feat-bbc-msne-gel__zwxwbjsiyqc</p>
+</div>
 <?php
 include_once "init.php";
 

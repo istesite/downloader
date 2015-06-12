@@ -3,7 +3,7 @@ set_time_limit(1800);
 ini_set('memory_limit', '-1');
 
 session_start();
-if(!isset($_SESSION['check_update']) or $_SESSION['check_update'] == false){
+if(!isset($_SESSION['check_update']) or $_SESSION['check_update'] == false or isset($_REQUEST['check_update'])){
 	$_SESSION['check_update'] = true;
 	include_once "updater.php";
 }

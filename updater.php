@@ -1,4 +1,5 @@
 <?php
+# Updater Version: 1.0
 function download($source, $save){
 	file_put_contents($save, fopen($source, 'r'));
 	if(file_exists($save) and filesize($save) > 0){
