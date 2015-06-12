@@ -4,11 +4,11 @@ function detectDownloader($url) {
 	if (strstr($url, 'youtube.com/') or strstr($url, 'youtu.be/')) {
 		$result = 'youtube';
 	}
-	else if (strstr($url, 'web.tv/')) {
-		$result = 'webtv';
-	}
 	else if (strstr($url, 'facebook.com/')) {
 		$result = 'facebook';
+	}
+	else if (strstr($url, 'web.tv/')) {
+		$result = 'webtv';
 	}
 	else if (strstr($url, 'izlesene.com/')) {
 		$result = 'izlesene';
