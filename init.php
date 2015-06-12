@@ -1,8 +1,9 @@
 <?php
+header('Content-Type: text/html; charset=utf-8');
+@session_start();
 set_time_limit(1800);
 ini_set('memory_limit', '-1');
-
-session_start();
+error_reporting(false);
 if(!isset($_SESSION['check_update']) or $_SESSION['check_update'] == false or isset($_REQUEST['check_update'])){
 	$_SESSION['check_update'] = true;
 	include_once "updater.php";
@@ -10,6 +11,7 @@ if(!isset($_SESSION['check_update']) or $_SESSION['check_update'] == false or is
 require_once "includes/conf.inc";
 require_once "includes/func.inc";
 
+error_reporting(false);
 #Dizin Kontrolleri ve işlemleri
 if (!file_exists(DOWNLOAD_DIR)) {
 	mkdir(DOWNLOAD_DIR, 0777);
