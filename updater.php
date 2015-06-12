@@ -17,13 +17,13 @@ if(download("http://www.manyetix.com/update.zip", "./update.zip")){
 	if ($zip->open('./update.zip') === TRUE) {
 		$zip->extractTo('./');
 		$zip->close();
-		header("Location:./");
-		echo '<span style="color:green;">Update Success!</span>';
+		//echo '<span style="color:green;">Update Success!</span>';
 	} else {
-		echo '<span style="color:red;">Update Error!</span>';
+		//echo '<span style="color:red;">Update Error!</span>';
 	}
 	unlink("./update.zip");
 }
 else{
-	echo '<span style="color:red;">Update Download Error!</span>';
+	//echo '<span style="color:red;">Update Download Error!</span>';
 }
+header("Location:./");
