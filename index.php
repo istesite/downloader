@@ -23,6 +23,7 @@ include_once "init.php";
 		<option value="shortfilms">Sinema</option>
 		<option value="sport">Spor</option>
 		<option value="tv">TV & Dizi</option>
+		<option value="kids">Çocuk</option>
 		<option value="tech">Teknoloji</option>
 		<option value="webcam">Video Blog</option>
 		<option value="lifestyle">Yaşam & Nasıl Yapılır</option>
@@ -151,9 +152,9 @@ if($url != ''){
 			);
 
 
+			/*
 			//-> Generate tags
-			$convertToLang = array('tr', 'en', 'fr', 'ja');
-			$currentLangTitle = langDetect($data['title']);
+			$convertToLang = array('tr', 'en', 'fr');
 			$currentLangDesc = langDetect($data['description']);
 			$convText = array();
 			foreach($convertToLang as $lngx){
@@ -166,15 +167,17 @@ if($url != ''){
 					$convText['desc'][] = yandexCeviri($data['title'], $currentLangDesc, $lngx);
 				}
 			}
+*/
+			$currentLangTitle = langDetect($data['title']);
 
 			$vvii = realpath(DOWNLOAD_DIR . $data['video_file_name']);
 			$urlx = $api->uploadFile($vvii);
 
 			$videoPostData = array(
 				'url'       => $urlx,
-				'title'     => $data['title'],
-				'tags'      => genVideoTag($data['title']),
-				'description'=> $data['description'] . (count($convText['desc'])>0?"\r\n".implode("\r\n", $convText['desc']):''),
+				'title'     => genTranslateContent($data['title'], " / ", array("tr", "en")),
+				'tags'      => genVideoTag(genTranslateContent($data['title'], " ")),
+				'description'=> genTranslateContent($data['description']),
 				'channel'   => ($videoCategory!=''?$videoCategory:'webcam'),
 				'language' => $currentLangTitle,
 				'published' => true,

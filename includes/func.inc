@@ -280,3 +280,27 @@ function getFacebookTags($str){
 	}
 	return $res;
 }
+
+function genTranslateContent($str, $spliter="\r\n", $langs = array("tr", "en", "de")){
+	include_once "classes/translate.class.php";
+	$transStr = array();
+	$trans = new translate();
+	if(!isset($langs)){
+		$transLangs = array("tr", "en", "de");
+	}
+	else{
+		$transLangs = $langs;
+	}
+	$currLang = $trans->langDetect($str);
+
+	foreach($transLangs as $lngx){
+		if($currLang == $lngx){
+			$transStr[$lngx] = $str;
+		}
+		else{
+			$transStr[$lngx] = $trans->translator($str, $currLang, $lngx);
+		}
+	}
+	//echo "<pre>".var_export($transStr, true)."</pre>";
+	return implode($spliter, $transStr);
+}
