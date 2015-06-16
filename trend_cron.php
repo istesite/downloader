@@ -5,6 +5,18 @@ include_once "./includes/func.inc";
 set_time_limit(0);
 error_reporting(false);
 
+if(!isset($date) and isset($argv[1])){
+	$date = $argv[1];
+}
+
+if(!isset($date) and isset($_REQUEST['date'])){
+	$date = $_REQUEST['date'];
+}
+
+if(!isset($date) and isset($_REQUEST['date'])){
+	$date = $_REQUEST['date'];
+}
+
 $trensCountry = array("FR", "JP", "TR");
 
 function curlGet($url) {
@@ -35,7 +47,7 @@ if(file_exists("./trend_cron.log")){
 }
 
 foreach($trensCountry as $countryCode){
-	$trends = json_decode(curlGet("https://www.google.com.tr/trends/hotvideos/hotItems?hvd&geo=".$countryCode."&mob=0&hvsm=1"));
+	$trends = json_decode(curlGet("https://www.google.com.tr/trends/hotvideos/hotItems?hvd&geo=".$countryCode."&mob=0&hvsm=1".((isset($date)&&$date!='')?"&hvd=".$date:'')));
 	foreach($trends->videoList as $videoData){
 		if(!in_array($videoData->url, $allVideoUrl)){
 			echo $videoData->url."\n";
