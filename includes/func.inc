@@ -114,11 +114,29 @@ function csvToArray($data){
 	return $returning;
 }
 
-function stripslashes_deep($value){
-	if(isset($value)) {
-		$value = is_array($value) ? array_map('stripslashes_deep', $value) : stripslashes($value);
+
+function csvParse($str, $spliter = ";", $firstLineTitle = false){
+	$result = array();
+	$str = str_replace("\r", "", $str);
+	$rows = explode("\n", $str);
+	foreach($rows as $row){
+		$cols = explode($spliter, $row);
+		if($firstLineTitle and count($result) == 0){
+			$title = $cols;
+			continue;
+		}
+
+		foreach($cols as $colKey=>$colVal){
+			if(isset($title) and count($title) > 0){
+				$result[][$title[$colKey]] = $colVal;
+			}
+			else{
+				$result[] = $colVal;
+			}
+		}
 	}
-	return $value;
+
+	return $result;
 }
 
 function downloadx($source, $save, $referer=''){

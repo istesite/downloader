@@ -25,6 +25,16 @@ function curlGet($url) {
 $allVideoUrl = array();
 echo "Başlar\n";
 
+if(file_exists("./trend_cron.log")){
+	$fileLog = file_get_contents("./trend_cron.log");
+	$fileLog = explode("\n", $fileLog);
+	foreach($fileLog as $logg){
+		$allVideoUrl[] = trim($logg);
+	}
+	//$fileLog = $fileLogs;
+	unSet($fileLog);
+}
+
 foreach($trensCountry as $countryCode){
 	//echo "$countryCode\n";
 	$trends = json_decode(curlGet("https://www.google.com.tr/trends/hotvideos/hotItems?hvd&geo=".$countryCode."&mob=0&hvsm=1"));
@@ -42,6 +52,7 @@ foreach($allVideoUrl as $vid){
 	$result = curlGet("http://www.istesite.com/api/dailymotion/taka/?video_url=".$vid);
 	if(strstr($result, "YÜKLEME BAŞARILI!")){
 		echo $vid."\tOK\n";
+		writeFile("./trend_cron.log", $vid);
 	}
 	else{
 		echo $vid."\tERROR\n";
