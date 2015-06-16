@@ -40,10 +40,15 @@ echo "BASLAR\n";
 if(file_exists("./trend_cron.log")){
 	$fileLog = file_get_contents("./trend_cron.log");
 	$fileLog = explode("\n", $fileLog);
+	$fileLogs = array();
 	foreach($fileLog as $logg){
-		$allVideoUrl[] = trim($logg);
+		$fileLogs[] = trim($logg);
 	}
-	unSet($fileLog);
+	$fileLog = $fileLogs;
+	unSet($fileLogs);
+}
+else{
+	$fileLog = array();
 }
 
 echo "\n\nUPLOADER BASLAR\n";
@@ -51,7 +56,7 @@ echo "\n\nUPLOADER BASLAR\n";
 foreach($trensCountry as $countryCode){
 	$trends = json_decode(curlGet("https://www.google.com.tr/trends/hotvideos/hotItems?hvd&geo=".$countryCode."&mob=0&hvsm=1".((isset($date)&&$date!='')?"&hvd=".$date:'')));
 	foreach($trends->videoList as $videoData){
-		if(!in_array($videoData->url, $allVideoUrl)){
+		if(!in_array($videoData->url, $allVideoUrl) and !in_array($videoData->url, $fileLog)){
 			echo $videoData->url."\n";
 			$allVideoUrl[] = $videoData->url;
 		}
