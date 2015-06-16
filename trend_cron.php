@@ -17,7 +17,7 @@ if(!isset($date) and isset($_REQUEST['date'])){
 	$date = $_REQUEST['date'];
 }
 
-$trensCountry = array("FR", "JP", "TR");
+$trensCountry = array("FR", "JP", "US", "IN", "TR");
 
 function curlGet($url) {
 	$useragent = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.81 Safari/537.36';
