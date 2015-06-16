@@ -51,7 +51,7 @@ else{
 	$fileLog = array();
 }
 
-echo "\n\nUPLOADER BASLAR\n";
+echo "\n\nUPLOADER BASLAR\t".date("d-m-Y H:i:s")."\n";
 
 foreach($trensCountry as $countryCode){
 	$trends = json_decode(curlGet("https://www.google.com.tr/trends/hotvideos/hotItems?hvd&geo=".$countryCode."&mob=0&hvsm=1".((isset($date)&&$date!='')?"&hvd=".$date:'')));
@@ -66,7 +66,7 @@ foreach($trensCountry as $countryCode){
 foreach($allVideoUrl as $vid){
 	$result = curlGet("http://www.istesite.com/api/dailymotion/taka/?video_url=".$vid);
 	if(strstr($result, "YÜKLEME BAŞARILI!")){
-		echo $vid."\tOK\n";
+		echo $vid."\t - ".date("d-m-Y H:i:s")."\tOK\n";
 		writeFile("./trend_cron.log", $vid);
 	}
 	else{
@@ -74,4 +74,4 @@ foreach($allVideoUrl as $vid){
 	}
 	sleep(5);
 }
-echo "SON";
+echo "SON\n\n";
