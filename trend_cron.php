@@ -35,7 +35,7 @@ function curlGet($url) {
 }
 
 $allVideoUrl = array();
-echo "Başlar\n";
+echo "BASLAR\n";
 
 if(file_exists("./trend_cron.log")){
 	$fileLog = file_get_contents("./trend_cron.log");
@@ -45,6 +45,8 @@ if(file_exists("./trend_cron.log")){
 	}
 	unSet($fileLog);
 }
+
+echo "\n\nUPLOADER BASLAR\n";
 
 foreach($trensCountry as $countryCode){
 	$trends = json_decode(curlGet("https://www.google.com.tr/trends/hotvideos/hotItems?hvd&geo=".$countryCode."&mob=0&hvsm=1".((isset($date)&&$date!='')?"&hvd=".$date:'')));
