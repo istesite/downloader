@@ -31,15 +31,11 @@ if(file_exists("./trend_cron.log")){
 	foreach($fileLog as $logg){
 		$allVideoUrl[] = trim($logg);
 	}
-	//$fileLog = $fileLogs;
 	unSet($fileLog);
 }
 
 foreach($trensCountry as $countryCode){
-	//echo "$countryCode\n";
 	$trends = json_decode(curlGet("https://www.google.com.tr/trends/hotvideos/hotItems?hvd&geo=".$countryCode."&mob=0&hvsm=1"));
-	//echo $trends->videoList[0]->url; exit;
-	//echo "<pre>".var_export($trends->videoList, true)."</pre>";
 	foreach($trends->videoList as $videoData){
 		if(!in_array($videoData->url, $allVideoUrl)){
 			echo $videoData->url."\n";
