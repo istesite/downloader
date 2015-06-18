@@ -177,7 +177,7 @@ if($url != ''){
 				'url'       => $urlx,
 				'title'     => $data['title'],
 				'tags'      => genVideoTag(genTranslateContent($data['title'], " ")),
-				'description'=> genTranslateContent($data['description'], "\n\n"),
+				'description'=> genTranslateContent($data['description']),
 				'channel'   => ($videoCategory!=''?$videoCategory:'webcam'),
 				'language' => $currentLangTitle,
 				'published' => true,

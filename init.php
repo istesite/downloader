@@ -1,5 +1,5 @@
 <?php
-header('Content-Type: text/html; charset=utf-8');
+@header('Content-Type: text/html; charset=utf-8');
 @session_start();
 set_time_limit(1800);
 ini_set('memory_limit', '-1');

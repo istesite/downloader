@@ -1,6 +1,6 @@
 <?php
 # Youtube Class
-date_default_timezone_set("Asia/Tehran");
+@date_default_timezone_set("Asia/Tehran");
 
 class video {
 

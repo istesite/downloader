@@ -25,6 +25,9 @@ function detectDownloader($url) {
 	else if (strstr($url, 'mynet.com/')) {
 		$result = 'mynet';
 	}
+	else if (strstr($url, 'yookartik.com/')) {
+		$result = 'haberay';
+	}
 	else {
 		$result = $_POST['video_site'];
 	}
