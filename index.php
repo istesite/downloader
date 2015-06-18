@@ -175,9 +175,9 @@ if($url != ''){
 
 			$videoPostData = array(
 				'url'       => $urlx,
-				'title'     => genTranslateContent($data['title'], " / ", array("tr", "en")),
+				'title'     => $data['title'],
 				'tags'      => genVideoTag(genTranslateContent($data['title'], " ")),
-				'description'=> genTranslateContent($data['description']),
+				'description'=> genTranslateContent($data['description'], "\n\n"),
 				'channel'   => ($videoCategory!=''?$videoCategory:'webcam'),
 				'language' => $currentLangTitle,
 				'published' => true,
