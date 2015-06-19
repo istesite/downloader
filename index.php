@@ -179,7 +179,7 @@ if($url != ''){
 				'tags'      => genVideoTag(genTranslateContent($data['title'], " ")),
 				'description'=> genTranslateContent($data['description']),
 				'channel'   => ($videoCategory!=''?$videoCategory:'webcam'),
-				'language' => $currentLangTitle,
+				'language' => $currentLangTitle==false?'tr':$currentLangTitle,
 				'published' => true,
 			);
 			$resultx = $api->post('/me/videos', $videoPostData);

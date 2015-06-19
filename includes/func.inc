@@ -313,6 +313,9 @@ function genTranslateContent($str, $spliter="\r\n", $langs = array("tr", "en", "
 		$transLangs = $langs;
 	}
 	$currLang = $trans->langDetect($str);
+	if($currLang == false){
+		return $str;
+	}
 
 	foreach($transLangs as $lngx){
 		if($currLang == $lngx){
