@@ -64,6 +64,10 @@ class video {
 
 
 	function getVideoUrl(){
+		//die($this->pageSourceCode);
+		if(strstr($this->pageSourceCode, 'This content is currently unavailable')){
+			$this->setError("Login gerekli.");
+		}
 		preg_match_all('/(\[\["params".*?"\]\])/ix', $this->pageSourceCode, $result, PREG_PATTERN_ORDER);
 		$data = $result[1][0];
 
