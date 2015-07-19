@@ -1,56 +1,7 @@
 <?php
 include_once "init.php";
-?>
-<html>
-<head>
-	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-</head>
-<body>
-<form method="POST" action="">
-	<input type="text" name="video_url" size="50" style="height:40px; line-height:40px;" placeholder="http:// (daily., youtu., faceb., web.tv, izlesene.com, haberya.com.tr, ajanshaber.com, ...)">
-	<select name="video_cat" style="height:40px; line-height:40px;">
-		<option value="">Kategori...</option>
-		<option value="school">Eğitim</option>
-		<option value="news">Haber</option>
-		<option value="animals">Hayvanlar</option>
-		<option value="fun">Komedi ve Eğlence</option>
-		<option value="people">Magazin</option>
-		<option value="music">Müzik</option>
-		<option value="auto">Oto-Moto</option>
-		<option value="videogames">Oyun</option>
-		<option value="creation">Sanat</option>
-		<option value="travel">Seyahat</option>
-		<option value="shortfilms">Sinema</option>
-		<option value="sport">Spor</option>
-		<option value="tv">TV & Dizi</option>
-		<option value="kids">Çocuk</option>
-		<option value="tech">Teknoloji</option>
-		<option value="webcam">Video Blog</option>
-		<option value="lifestyle">Yaşam & Nasıl Yapılır</option>
-	</select>
-	<input type="submit" value="Yükle" style="height:40px; line-height:40px;" />
-</form>
-<div style="font-size: 9px; color:#999; line-height: 5px; font-family: Tahoma;">
-	<p><b>Dailymotion:</b> http://www.dailymotion.com/video/x2tmwx0_new-best-club-dance-music-megamix-2015-club-music_music</p>
-	<p><b>Youtube:</b> https://www.youtube.com/watch?v=2zNB56chXUA</p>
-	<p><b>Facebook:</b> https://www.facebook.com/elcircodelamega/videos/10152785567701006/</p>
-	<p><b>İzlesene:</b> http://www.izlesene.com/video/adem-gumuskaya-sansimiz-dondu/8552263</p>
-	<p><b>Haber Ay:</b> http://www.haberay.com.tr/akraba-olsa-davetiye-verilmez-737v.htm</p>
-	<p><b>Ajans Haber:</b> http://www.ajanshaber.com/bmwden-mercedese-gozdagi-video/199359</p>
-	<p><b>Web.tv:</b> http://onuradiguzel.web.tv/video/hakan-durmazlar-feat-bbc-msne-gel__zwxwbjsiyqc</p>
-</div>
-<script>
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+include_once "templates/form.html";
 
-	ga('create', 'UA-20366275-34', 'auto');
-	ga('send', 'pageview');
-</script>
-</body>
-</html>
-<?php
 if(!isset($url) and isset($argv[1])){
 	$url = $argv[1];
 }
@@ -70,10 +21,12 @@ else{
 	$videoCategory = '';
 }
 
-if($url != ''){
-	writeFile('./downloadFileList.txt', $url);
+if($url != '' and $db->numRowsCount("SELECT * FROM orjinal_videos WHERE orjinal_url='" . $url . "'") == 0){
+	//writeFile('./downloadFileList.txt', $url);
 	$parser = detectDownloader($url);
+
 	echo "<h2>".strtoupper($parser)."</h2>\n";
+
 	if(file_exists("classes/$parser.class.php")){
 		include_once "classes/$parser.class.php";
 	}
@@ -119,7 +72,14 @@ if($url != ''){
 	}
 	$data = $video->getResult();
 
-	//echo "<pre>".var_export($data, true)."</pre>";
+	if($db->numRowsCount("SELECT * FROM videos WHERE title='".$db->clean($data['title'])."'") > 0){
+		die('Bu isimde bir video zaten yüklenmiş.');
+	}
+
+	if($parser == 'youtube' and $data['length'] > 1000){
+		$data['video_url'] = '';
+	}
+
 	if(urlExists($data['video_url'])){
 		$downloadCounter = DOWNLOAD_COUNTER;
 		$downloadStatus = false;
@@ -192,6 +152,13 @@ if($url != ''){
 				echo "<h5>".$resultx['title']."</h5>";
 				echo "<pre>".var_export($videoPostData, true)."</pre>\n";
 				echo '<h4 style="color:green;">YÜKLEME BAŞARILI! :)</h4>';
+
+				$db->query("INSERT INTO orjinal_videos (orjinal_url, video_file, image_url, title, content, status, dailymotion_id, indate) VALUES ('".$url."', '".$data['video_file_name']."', '".$data['picture_url']."', '".$db->clean($data['title'])."', '".$db->clean($data['description'])."', '1', '".$resultx['id']."', '".time()."')");
+				$lastInsertId = $db->insertId();
+
+				$insertVideosSql = "INSERT INTO videos (dailymotion_id, title, descr, tags, lang, orj_id, indate, dailymotion_channel, duration) VALUES ('".$resultx['id']."', '".$db->clean($videoPostData['title'])."', '".$db->clean($videoPostData['description'])."', '".$db->clean($videoPostData['tags'])."', '".$videoPostData['language']."', '".$lastInsertId."','".time()."', '".DAILY_USERNAME."', '".(isset($data['length'])?$data['length']:'0')."')";
+				//echo $insertVideosSql;
+				$db->query($insertVideosSql);
 			}
 			else{
 				echo '<h4 style="color:red;">VİDEO YÜKLENEMEDİ. :(</h4>';
